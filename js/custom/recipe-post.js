@@ -1,10 +1,13 @@
+//random function to generate prep time, cook time and servings as the info is not available in api as of now
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
 window.onload = async () => {
+  //Using form get method to fetch recipe id or category name as per user selection
   let queryString = window.location.search;
   let urlParams = new URLSearchParams(queryString);
   let recipeId = urlParams.get("recipeId");
-  if (recipeId) {
+  let categoryId = urlParams.get("select1");
+  if (recipeId && !categoryId) {
     fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -52,12 +55,6 @@ window.onload = async () => {
           }
         });
 
-        // const recipeKeys = Object.keys(data.meals[0]);
-        // const ingredientKeys = recipeKeys.filter((key) => {
-        //   if (key.startsWith("strIngredient")) {
-        //     return key;
-        //   }
-        // });
         for (let idx = 1; idx <= 20; idx++) {
           ingredient = data.meals[0][`strIngredient${idx}`];
           measurement = data.meals[0][`strMeasure${idx}`];
@@ -83,7 +80,6 @@ window.onload = async () => {
           </div>`;
           }
         }
-        console.log(data.meals[0].strYoutube);
 
         document.getElementById("recipe-video-container").innerHTML =
           `
@@ -93,22 +89,72 @@ window.onload = async () => {
             .replace("?v=", "/") +
           `" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         `;
-        document.getElementById(
-          "receipe-img"
-        ).style.backgroundImage = `url(${data.meals[0].strMealThumb})`;
+
+        recipeImg = document.createElement("img");
+        recipeImg.src = data.meals[0].strMealThumb;
+        recipeImg.width = 250;
+        document.getElementById("receipe-img").appendChild(recipeImg);
+        document.getElementById("receipe-list-area").remove();
+      });
+  } else if (categoryId) {
+    document.getElementById("ingredients").innerHTML = "";
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoryId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        let h3 = document.createElement("h3");
+        let h3Text = document.createTextNode(`${categoryId} Recipes`);
+        h3.appendChild(h3Text);
+        document.getElementById("recipe-list-heading").appendChild(h3);
+        data.meals.forEach((meal) => {
+          document.getElementById("receipe-list-row").innerHTML +=
+            `
+      <div class="col-12 col-sm-6 col-lg-4">
+          <div class="single-best-receipe-area mb-30">
+            <img src="` +
+            meal.strMealThumb +
+            `" alt="" />
+            <div class="receipe-content">
+              <a href="receipe-post.html?recipeId=` +
+            meal.idMeal +
+            `">
+                <h5>` +
+            meal.strMeal +
+            `</h5>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+        });
       });
   } else {
+    //when there is no recipe id attached to the page, display recipes by category
     document.getElementById("receipe-post-search").style.display = "block";
-    // fetch(`https://www.themealdb.com/api/json/v1/1/list.php?c=list`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     for (idx = 0; idx < data.length; idx++) {
-    //       document.getElementById("select1").innerHTML +=
-    //         `<option value=` +
-    //         idx`>` +
-    //         data.meals[idx].strCategory +
-    //         `</option>`;
-    //     }
-    //   });
+    fetch(`https://www.themealdb.com/api/json/v1/1/list.php?c=list`)
+      .then((response) => response.json())
+      .then((data) => {
+        for (let x = 0; x < data.meals.length; x++) {
+          let option = document.createElement("option");
+          option.value = data.meals[x].strCategory;
+          option.text = data.meals[x].strCategory;
+          document.getElementById("select1").appendChild(option);
+        }
+        $("select").niceSelect("destroy"); //destroy the plugin
+        $("select").niceSelect(); //apply again
+        document.getElementById("ingredients").innerHTML = "";
+
+        recipeImg = document.createElement("img");
+        recipeImg.src = "../../img/bg-img/about.png";
+        document
+          .getElementById("recipe-video-container")
+          .appendChild(recipeImg);
+        document.getElementById("receipe-headline").remove();
+        document.getElementById("receipe-img").remove();
+        document.getElementById("preperation-steps").remove();
+        document.getElementById("ingredients").remove();
+        document.getElementById("recipe-list-heading").remove();
+        document.getElementById("receipe-list-row").remove();
+        document.getElementById("receipe-list-area").remove();
+      });
   }
 };

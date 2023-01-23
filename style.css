@@ -901,6 +901,12 @@ textarea:focus {
   padding-bottom: 50px;
 }
 
+.receipe-list-area {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 50px;
+}
+
 .single-best-receipe-area {
   position: relative;
   z-index: 1;
@@ -1257,6 +1263,10 @@ textarea:focus {
   font-size: 14px;
   padding: 0 20px;
   border: none;
+}
+
+.col-12 {
+  margin-bottom: 15px;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .receipe-post-search .col-12 {
