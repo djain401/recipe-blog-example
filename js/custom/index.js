@@ -1,6 +1,6 @@
 const bestRecipeIds = ["52848", "52812", "52765", "52787", "52857", "52785"];
 
-//Hero section - recipes are displayed at random from API in the form of a slider
+//Hero section - 3 recipes are displayed at random from API in the form of a slider
 window.onload = async () => {
   $("#carousel-parent").owlCarousel();
   for (let x = 0; x <= 2; x++) {
