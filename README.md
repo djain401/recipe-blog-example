@@ -12,6 +12,7 @@ The code is well-organized and easy to customize, making it a great starting poi
 - Recipe feedback system lets user submit feedback.
 - Includes video tutorials for cooking techniques or difficult recipes to help users better understand the process.
 - Ability to subscribe to newsletter.
+- Carousel to highlight trending or new recipes on the home page.
 
 ## Usage
 
